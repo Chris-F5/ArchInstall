@@ -1,6 +1,6 @@
 #!/bin/sh
 # Format EFI partition
-mkfs.fat -F -F32 /dev/sda1
+mkfs.fat -F32 /dev/sda1
 
 # Format swap partition
 mkswap /dev/sda2
