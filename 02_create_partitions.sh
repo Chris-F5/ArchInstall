@@ -1,4 +1,6 @@
 #!/bin/sh
+wipefs -a /dev/sda
+
 (
 echo g # GTP partition
 
