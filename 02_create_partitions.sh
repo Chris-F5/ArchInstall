@@ -1,3 +1,4 @@
+#!/bin/sh
 (
 echo g # GTP partition
 

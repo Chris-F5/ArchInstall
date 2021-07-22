@@ -1,3 +1,4 @@
+#!/bin/sh
 # Mount root partition
 mount /dev/sda3 /mnt
 
