@@ -8,6 +8,10 @@ echo 1
 echo ""
 echo +550M
 
+echo t
+echo 1
+echo "EFI System"
+
 # Swap partition
 echo n
 echo 2
