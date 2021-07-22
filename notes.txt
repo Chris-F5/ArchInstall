@@ -1,0 +1,88 @@
+// KEYBOARD LAYOUT
+
+// show all keyboard layouts
+ls /usr/share/kbd/keymaps/**/*.map.gz
+
+// load uk keyboard
+loadkeys uk
+
+// NETWORK
+
+// enable network time synchronization
+timedatectl set-ntp true
+
+// PARTITIONING
+// Let user pick which drive to use. List drives with:
+fdisk -l
+fdisk /dev/sda
+    // if creating GTP partition table:
+    g
+    // else if creating DOS partition table:
+    o
+
+    // IF UEFI SYSTEM: create efi partition
+    n
+        1
+        [DEFAULT]
+        +550M
+    t
+        1
+        EFI System
+    
+    // create swap partition
+    n
+        2
+        [DEFAULT]
+        +2G
+    t
+        2
+        Linux swap
+    
+    // create root partition
+    n
+        3
+        [DEFAULT]
+        [DEFAULT]
+        
+    // write to disk
+    w
+
+// FORMAT PARTITIONS
+
+// efi format
+mkfs.fat -F32 /dev/sda1
+
+// swap partition
+mkswap /dev/sda2
+swapon /dev/sda2
+
+// root partition
+mkfs.ext4 /dev/sda3
+
+// MOUNT ROOT PARTITION
+mount /dev/sda3 /mnt
+
+// INSTALL ARCH LINUX
+pacstrap /mnt base linux linux-firmware
+
+// GENERATE FILE SYSTEM TABLE (maybe change if not uefi)
+genfstab -U /mnt >> /mnt/etc/fstab
+
+// SWICH TO NEW ROOT
+arch-chroot /mnt
+    // set time zone
+    ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
+    hwclock --systohc
+
+    sed "s/#en_GB.UTF-8/en_GB.UTF-8/g" /etc/locale.gen > /etc/locale.gen
+
+
+
+
+#en_GB.UFT8
+
+
+
+
+
+
