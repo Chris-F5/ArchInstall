@@ -79,10 +79,5 @@ arch-chroot /mnt
 
 
 
-#en_GB.UFT8
-
-
-
-
 
 
