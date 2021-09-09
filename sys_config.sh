@@ -1,57 +1,62 @@
 #!/bin/bash
 
 disk=$1
+log_file=$2
 
-echo "Hit enter to install packages."
-read
+printf "" > $log_file
 
-required_packages="networkmanager grub"
-optional_packages="neovim neofetch"
+packages="networkmanager grub neovim neofetch git"
 
-pacman -S $required_packages $optional_packages
+echo "Installing packages '$packages':"
+echo ">>> Installing packages '$packages':" >> $log_file
+echo "yes" | pacman -Sy $packages 2>&1 | tee -a $log_file
 
-echo ""
-echo "Hit enter to enable network manager."
-read
+echo ">>> Enabling network manager: " >> $log_file
+systemctl enable NetworkManager 2>&1 | tee -a $log_file
 
-systemctl enable NetworkManager
-
-echo ""
-echo "Hit enter to install grub."
-read
-
-grub-install $disk
+echo "Installing grub:"
+echo ">>> Installing grub:" >> $log_file
+grub-install $disk 2>&1 | tee -a $log_file
+grub-mkconfig -o /boot/grub/grub.cfg 2>&1 | tee -a $log_file
 
 echo ""
-echo "Hit enter to make grub config."
-read
-
-grub-mkconfig -o /boot/grub/grub.cfg
-
-echo ""
-echo "Hit enter to set a password for root user."
-read
-
+echo "Set password for root user:"
 passwd
-
-echo ""
-echo "Hit enter to generate locals."
 
 locale="en_GB.UTF-8"
 echo "Using locale '$locale'"
 
-sed "s/#$locale/$locale/g" /etc/locale.gen > /etc/locale.gen
-locale-gen
+echo ">>> Setting locale to '$locale':" >> $log_file
+
+sed -i "/^#$locale/s/^#//" /etc/locale.gen
+locale-gen 2>&1 | tee -a $log_file
 echo "LANG=$locale" > /etc/locale.conf
 
 echo ""
 echo "Enter hostname (e.g. archbox)"
 read hostname
 
+echo ">>> Setting host name to '$hostname'." >> $log_file
 echo "$hostname" > /etc/hostname
 
-echo "Hit enter to set time zone."
-read
-
 zone="Europe/London"
-ln -sf /usr/share/zoneinfo/$zone /etc/localtime
+echo ">>> Setting time zone to '$zone':" >> $log_file
+ln -sf /usr/share/zoneinfo/$zone /etc/localtime 2>&1 | tee -a $log_file
+
+echo ""
+echo "Enter user name (e.g. chris):"
+read username
+
+echo ">>> Creating user '$username':" >> $log_file
+useradd -mg wheel $username 2>&1 | tee -a $log_file
+passwd $username
+
+echo ">>> Updating sudoers file." >> $log_file
+
+sudoers_user_privilege_line="%wheel ALL=(ALL) ALL"
+sed -i "/# $sudoers_user_privilege_line/s/^# //" /etc/sudoers
+
+echo ">>> Cloning dwm:" >> $log_file
+
+dwm_git_repo="https://git.suckless.org/dwm"
+git clone $dwm_git_repo 2>&1 | tee -a $log_file
