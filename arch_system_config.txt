@@ -1,0 +1,39 @@
+SET HOSTNAME
+Edit `/etc/hostname`.
+
+SET LOCALE
+Edit `/etc/locale.gen` and uncomment `en_GB.UTF-8 UTF-8`.
+Generate locales by running `# locale-gen`.
+Create `/etc/locale.conf` and set contents to `LANG=en_GB.UTF-8`.
+
+SET CONSOLE KEYBOARD LAYOUT
+Create `/etc/vconsole.conf` and set contents to `KEYMAP=uk`.
+
+NETWORK
+Here, my main options are NetworkManager and systemd-networkd.
+Systemd is part of the default archlinux installation and is easy to setup wired
+networks on.
+    NETWORK MANAGER
+    https://wiki.archlinux.org/title/NetworkManager
+    SYSTEMD-NETWORKD
+    https://wiki.archlinux.org/title/Systemd-networkd
+    Enable resoved service `systemctl enable systemd-resolved.service`.
+    systemd-resolved provides resolver services for DNS etc.
+    Enable the networkd service `systemctl enable systemd-networkd.service`.
+    Check your ethernet adapter name with `networkctl list`.
+    Add network configuration file in location `/etc/systemd/network`.
+    e.g. `/etc/systemd/network/wired1.network`.
+    Edit this network configuration file. Here is an example:
+    ```
+    [Match]
+    Name=enp1s0
+    [Network]
+    DHCP=yes
+    ```
+    Sart the services or reboot.
+
+SYSTEM TIME
+https://wiki.archlinux.org/title/System_time
+
+USEFULL PACKAGES
+`pacman -Sy base-devel git`
