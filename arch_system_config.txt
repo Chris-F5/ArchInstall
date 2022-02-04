@@ -33,7 +33,13 @@ networks on.
     Sart the services or reboot.
 
 SYSTEM TIME
-https://wiki.archlinux.org/title/System_time
+Set time zone `ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime`
+Sync time with system clock `timedatectl set-ntp true`
+
+ADD USER
+`EDITOR=nvim visudo /etc/sudoers` uncomment `%wheel ALL=(ALL:ALL) ALL`
+`useradd -m -G wheel chris` -m creates home directory.
+`passwd chris`
 
 USEFULL PACKAGES
 `pacman -Sy base-devel git`
